@@ -35,15 +35,7 @@ class NumberValidator(Validator):
         See Also:
             https://python-prompt-toolkit.readthedocs.io/en/master/pages/asking_for_input.html?highlight=validator#input-validation
         """
-        try:
-            if self._float_allowed:
-                float(document.text)
-            else:
-                int(document.text)
-        except ValueError:
-            raise ValidationError(
-                message=self._message, cursor_position=document.cursor_position
-            )
+        pass
 
 
 class PathValidator(Validator):
@@ -73,22 +65,7 @@ class PathValidator(Validator):
         See Also:
             https://python-prompt-toolkit.readthedocs.io/en/master/pages/asking_for_input.html?highlight=validator#input-validation
         """
-        path = Path(document.text).expanduser()
-        if self._is_file and not path.is_file():
-            raise ValidationError(
-                message=self._message,
-                cursor_position=document.cursor_position,
-            )
-        elif self._is_dir and not path.is_dir():
-            raise ValidationError(
-                message=self._message,
-                cursor_position=document.cursor_position,
-            )
-        elif not path.exists():
-            raise ValidationError(
-                message=self._message,
-                cursor_position=document.cursor_position,
-            )
+        pass
 
 
 class EmptyInputValidator(Validator):
@@ -109,11 +86,7 @@ class EmptyInputValidator(Validator):
         See Also:
             https://python-prompt-toolkit.readthedocs.io/en/master/pages/asking_for_input.html?highlight=validator#input-validation
         """
-        if not len(document.text) > 0:
-            raise ValidationError(
-                message=self._message,
-                cursor_position=document.cursor_position,
-            )
+        pass
 
 
 class PasswordValidator(Validator):
@@ -159,7 +132,4 @@ class PasswordValidator(Validator):
         See Also:
             https://python-prompt-toolkit.readthedocs.io/en/master/pages/asking_for_input.html?highlight=validator#input-validation
         """
-        if not self._re.match(document.text):
-            raise ValidationError(
-                message=self._message, cursor_position=document.cursor_position
-            )
+        pass

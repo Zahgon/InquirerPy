@@ -335,37 +335,11 @@ class NumberPrompt(BaseComplexPrompt):
         Returns:
             A tuple of whole buffer text and integral buffer text.
         """
-        left, right = value.split("E-")
-        whole_buffer_text = "0"
-        integral_buffer_text = f"{(int(right) - 1) * '0'}{left.replace('.', '')}"
-        return whole_buffer_text, integral_buffer_text
+        pass
 
     def _on_rendered(self, _) -> None:
         """Additional processing to adjust buffer content after render."""
-        if self._no_default:
-            return
-        if not self._float:
-            self._whole_buffer.text = str(self._default)
-            self._integral_buffer.text = "0"
-        else:
-            if self._sn_pattern.match(str(self._default)) is None:
-                whole_buffer_text, integral_buffer_text = str(self._default).split(".")
-            else:
-                whole_buffer_text, integral_buffer_text = self._fix_sn(
-                    str(self._default)
-                )
-            self._integral_buffer.text = integral_buffer_text
-            self._whole_buffer.text = whole_buffer_text
-        self._whole_buffer.cursor_position = len(self._whole_buffer.text)
-        self._integral_buffer.cursor_position = len(self._integral_buffer.text)
-        if self._replace_mode:
-            # check to start replace mode if applicable
-            if self._whole_buffer.text == "0":
-                self._whole_replace = True
-                self._whole_buffer.cursor_position = 0
-            if self._integral_buffer.text == "0":
-                self._integral_replace = True
-                self._integral_buffer.cursor_position = 0
+        pass
 
     def _handle_number(self, increment: bool) -> None:
         """Handle number increment and decrement.
@@ -376,47 +350,15 @@ class NumberPrompt(BaseComplexPrompt):
         Args:
             increment: Indicate if the operation should increment or decrement.
         """
-        if self.buffer_replace:
-            self.buffer_replace = False
-            self.focus_buffer.cursor_position += 1
-        try:
-            leading_zeros = ""
-            if self.focus_buffer == self._integral_buffer:
-                zeros = self._leading_zero_pattern.match(self._integral_buffer.text)
-                if zeros is not None:
-                    leading_zeros = zeros.group(1)
-            current_text_len = len(self.focus_buffer.text)
-            if not self.focus_buffer.text:
-                next_text = "0"
-                next_text_len = 1
-            else:
-                if not increment:
-                    if (
-                        self.focus_buffer == self._integral_buffer
-                        and int(self.focus_buffer.text) == 0
-                    ):
-                        return
-                    next_text = leading_zeros + str(int(self.focus_buffer.text) - 1)
-                else:
-                    next_text = leading_zeros + str(int(self.focus_buffer.text) + 1)
-                next_text_len = len(next_text)
-            desired_position = (
-                self.focus_buffer.cursor_position + next_text_len - current_text_len
-            )
-            self.focus_buffer.cursor_position = desired_position
-            self.focus_buffer.text = next_text
-            if self.focus_buffer.cursor_position != desired_position:
-                self.focus_buffer.cursor_position = desired_position
-        except ValueError:
-            self._set_error(message=self._value_error_message)
+        pass
 
     def _handle_down(self, _) -> None:
         """Handle down key press."""
-        self._handle_number(increment=False)
+        pass
 
     def _handle_up(self, _) -> None:
         """Handle up key press."""
-        self._handle_number(increment=True)
+        pass
 
     def _handle_left(self, _) -> None:
         """Handle left key press.
@@ -424,14 +366,7 @@ class NumberPrompt(BaseComplexPrompt):
         Move to the left by one cursor position and focus the whole window
         if applicable.
         """
-        self.buffer_replace = False
-        if (
-            self.focus == self._integral_window
-            and self.focus_buffer.cursor_position == 0
-        ):
-            self.focus = self._whole_window
-        else:
-            self.focus_buffer.cursor_position -= 1
+        pass
 
     def _handle_right(self, _) -> None:
         """Handle right key press.
@@ -439,54 +374,19 @@ class NumberPrompt(BaseComplexPrompt):
         Move to the right by one cursor position and focus the integral window
         if applicable.
         """
-        self.buffer_replace = False
-        if (
-            self.focus == self._whole_window
-            and self.focus_buffer.cursor_position == len(self.focus_buffer.text)
-            and self._float
-        ):
-            self.focus = self._integral_window
-        else:
-            self.focus_buffer.cursor_position += 1
+        pass
 
     def _handle_enter(self, event: "KeyPressEvent") -> None:
         """Handle enter event and answer/close the prompt."""
-        if not self._float and not self._whole_buffer.text:
-            result = ""
-        elif (
-            self._float
-            and not self._whole_buffer.text
-            and not self._integral_buffer.text
-        ):
-            result = ""
-        else:
-            result = str(self.value)
-
-        try:
-            fake_document = FakeDocument(result)
-            self._validator.validate(fake_document)  # type: ignore
-        except ValidationError as e:
-            self._set_error(str(e))
-        else:
-            self.status["answered"] = True
-            self.status["result"] = result
-            event.app.exit(result=result)
+        pass
 
     def _handle_dot(self, _) -> None:
         """Focus the integral window if `float_allowed`."""
-        self._handle_focus(_, self._integral_window)
+        pass
 
     def _handle_focus(self, _, window: Optional[Window] = None) -> None:
         """Focus either the integral window or whole window."""
-        if not self._float:
-            return
-        if window is not None:
-            self.focus = window
-            return
-        if self.focus == self._whole_window:
-            self.focus = self._integral_window
-        else:
-            self.focus = self._whole_window
+        pass
 
     def _handle_input(self, event: "KeyPressEvent") -> None:
         """Handle user input of numbers.
@@ -494,123 +394,59 @@ class NumberPrompt(BaseComplexPrompt):
         Buffer will start as replace mode if the value is zero, once
         cursor is moved or content is changed, disable replace mode.
         """
-        if self.buffer_replace:
-            self.buffer_replace = False
-            self.focus_buffer.text = event.key_sequence[0].data
-            self.focus_buffer.cursor_position += 1
-        else:
-            self.focus_buffer.insert_text(event.key_sequence[0].data)
+        pass
 
     def _handle_negative_toggle(self, _) -> None:
         """Toggle negativity of the prompt value.
 
         Force the `-` sign at the start.
         """
-        if self._whole_buffer.text == "-":
-            self._whole_buffer.text = "0"
-            return
-        if self._whole_buffer.text.startswith("-"):
-            move_cursor = self._whole_buffer.cursor_position < len(
-                self._whole_buffer.text
-            )
-            self._whole_buffer.text = self._whole_buffer.text[1:]
-            if move_cursor:
-                self._whole_buffer.cursor_position -= 1
-        else:
-            move_cursor = self._whole_buffer.cursor_position != 0
-            self._whole_buffer.text = f"-{self._whole_buffer.text}"
-            if move_cursor:
-                self._whole_buffer.cursor_position += 1
+        pass
 
     def _on_whole_text_change(self, buffer: Buffer) -> None:
         """Handle event of text changes in buffer."""
-        self._whole_width = len(buffer.text) + 1
-        self._on_text_change(buffer)
+        pass
 
     def _on_integral_text_change(self, buffer: Buffer) -> None:
         """Handle event of text changes in buffer."""
-        self._integral_width = len(buffer.text) + 1
-        self._on_text_change(buffer)
+        pass
 
     def _on_text_change(self, buffer: Buffer) -> None:
         """Disable replace mode and fix cursor position on text changes."""
-        self.buffer_replace = False
-        if buffer.text and buffer.text != "-":
-            self.value = self.value
-        if buffer.text.startswith("-") and buffer.cursor_position == 0:
-            buffer.cursor_position = 1
+        pass
 
     def _on_cursor_position_change(self, buffer: Buffer) -> None:
         """Fix cursor position on cursor movement."""
-        if self.focus_buffer.text.startswith("-") and buffer.cursor_position == 0:
-            buffer.cursor_position = 1
+        pass
 
     @property
     def buffer_replace(self) -> bool:
         """bool: Current buffer replace mode."""
-        if self.focus_buffer == self._whole_buffer:
-            return self._whole_replace
-        else:
-            return self._integral_replace
+        pass
 
     @buffer_replace.setter
     def buffer_replace(self, value) -> None:
-        if self.focus_buffer == self._whole_buffer:
-            self._whole_replace = value
-        else:
-            self._integral_replace = value
+        pass
 
     @property
     def focus_buffer(self) -> Buffer:
         """Buffer: Current editable buffer."""
-        if self.focus == self._whole_window:
-            return self._whole_buffer
-        else:
-            return self._integral_buffer
+        pass
 
     @property
     def focus(self) -> Window:
         """Window: Current focused window."""
-        return self._focus
+        pass
 
     @focus.setter
     def focus(self, value: Window) -> None:
-        self._focus = value
-        self._layout.focus(self._focus)
+        pass
 
     @property
     def value(self) -> Union[int, float, Decimal]:
         """Union[int, float]: The actual value of the prompt, combining and transforming all input buffer values."""
-        try:
-            if not self._float:
-                return int(self._whole_buffer.text)
-            else:
-                return Decimal(
-                    f"{self._whole_buffer.text}.{self._integral_buffer.text if self._integral_buffer.text else 0}"
-                )
-        except ValueError:
-            self._set_error(self._value_error_message)
-            return self._default
+        pass
 
     @value.setter
     def value(self, value: Union[int, float, Decimal]) -> None:
-        if self._min is not None:
-            value = max(
-                value, self._min if not self._float else Decimal(str(self._min))
-            )
-        if self._max is not None:
-            value = min(
-                value, self._max if not self._float else Decimal(str(self._max))
-            )
-        if not self._float:
-            self._whole_buffer.text = str(value)
-        else:
-            if self._sn_pattern.match(str(value)) is None:
-                whole_buffer_text, integral_buffer_text = str(value).split(".")
-            else:
-                whole_buffer_text, integral_buffer_text = self._fix_sn(str(value))
-
-            if self._whole_buffer.text:
-                self._whole_buffer.text = whole_buffer_text
-            if self._integral_buffer.text:
-                self._integral_buffer.text = integral_buffer_text
+        pass

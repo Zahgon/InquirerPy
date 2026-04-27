@@ -145,7 +145,7 @@ class InputPrompt(BaseSimplePrompt):
 
         @Condition
         def is_multiline():
-            return self._multiline
+            pass
 
         if not keybindings:
             keybindings = {}
@@ -181,28 +181,13 @@ class InputPrompt(BaseSimplePrompt):
         )
 
     def _set_error(self, message: str) -> None:
-        self._session.default_buffer.validation_state = ValidationState.INVALID
-        self._session.default_buffer.validation_error = ValidationError(message=message)
+        pass
 
     def _handle_enter(self, event: "KeyPressEvent") -> None:
-        try:
-            self._session.validator.validate(self._session.default_buffer)  # type: ignore
-        except ValidationError:
-            self._session.default_buffer.validate_and_handle()
-        else:
-            self.status["answered"] = True
-            self.status["result"] = self._session.default_buffer.text
-            self._session.default_buffer.text = ""
-            event.app.exit(result=self.status["result"])
+        pass
 
     def _handle_completion(self, event) -> None:
-        if self._completer is None:
-            return
-        buff = event.app.current_buffer
-        if buff.complete_state:
-            buff.complete_next()
-        else:
-            buff.start_completion(select_first=False)
+        pass
 
     def _get_prompt_message(
         self,
@@ -218,36 +203,10 @@ class InputPrompt(BaseSimplePrompt):
         Returns:
             Formatted text in list of tuple format.
         """
-        if not pre_answer:
-            if self._multiline and not self._instruction:
-                pre_answer = ("class:instruction", " ESC + Enter to finish input")
-            else:
-                pre_answer = (
-                    "class:instruction",
-                    " %s " % self.instruction if self.instruction else " ",
-                )
-        if not post_answer:
-            if self._multiline and self.status["result"]:
-                lines = self.status["result"].split("\n")
-                if len(lines) > 1:
-                    number_of_chars = len("".join(lines[1:]))
-                    lines[0] += "...[%s char%s]" % (
-                        number_of_chars,
-                        "s" if number_of_chars > 1 else "",
-                    )
-                post_answer = ("class:answer", " %s" % lines[0])
-            else:
-                post_answer = ("class:answer", " %s" % self.status["result"])
-
-        formatted_message = super()._get_prompt_message(pre_answer, post_answer)
-        if not self.status["answered"] and self._multiline:
-            formatted_message.append(
-                ("class:questionmark", "\n%s " % INQUIRERPY_POINTER_SEQUENCE)
-            )
-        return formatted_message
+        pass
 
     def _run(self) -> str:
-        return self._session.prompt(default=self._default)
+        pass
 
     async def _run_async(self) -> Any:
-        return await self._session.prompt_async(default=self._default)
+        pass

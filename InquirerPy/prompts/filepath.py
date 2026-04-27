@@ -43,48 +43,12 @@ class FilePathCompleter(Completer):
         self, document, complete_event
     ) -> Generator[Completion, None, None]:
         """Get a list of valid system paths."""
-        if document.text == "~":
-            return
-
-        validation = lambda file, doc_text: str(file).startswith(doc_text)
-
-        if document.cursor_position == 0:
-            dirname = Path.cwd()
-            validation = lambda file, doc_text: True
-        elif document.text.startswith("~"):
-            dirname = Path(os.path.dirname(f"{Path.home()}{document.text[1:]}"))
-            validation = lambda file, doc_text: str(file).startswith(
-                f"{Path.home()}{doc_text[1:]}"
-            )
-        elif document.text.startswith(f".{self._delimiter}"):
-            dirname = Path(os.path.dirname(document.text))
-            validation = lambda file, doc_text: str(file).startswith(doc_text[2:])
-        else:
-            dirname = Path(os.path.dirname(document.text))
-
-        for item in self._get_completion(document, dirname, validation):
-            yield item
+        pass
 
     def _get_completion(
         self, document, path, validation
     ) -> Generator[Completion, None, None]:
-        if not path.is_dir():
-            return
-        for file in path.iterdir():
-            if self._only_directories and not file.is_dir():
-                continue
-            if self._only_files and not file.is_file():
-                continue
-            if validation(file, document.text):
-                file_name = file.name
-                display_name = file_name
-                if file.is_dir():
-                    display_name = f"{file_name}{self._delimiter}"
-                yield Completion(
-                    file.name,
-                    start_position=-1 * len(os.path.basename(document.text)),
-                    display=display_name,
-                )
+        pass
 
 
 class FilePathPrompt(InputPrompt):

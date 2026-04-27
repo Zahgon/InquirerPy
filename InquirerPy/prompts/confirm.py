@@ -151,25 +151,16 @@ class ConfirmPrompt(BaseSimplePrompt):
         )
 
     def _set_error(self, message: str) -> None:
-        self._session.default_buffer.validation_state = ValidationState.INVALID
-        self._session.default_buffer.validation_error = ValidationError(message=message)
+        pass
 
     def _handle_reject(self, event) -> None:
-        self._session.default_buffer.text = ""
-        self.status["answered"] = True
-        self.status["result"] = False
-        event.app.exit(result=False)
+        pass
 
     def _handle_confirm(self, event) -> None:
-        self._session.default_buffer.text = ""
-        self.status["answered"] = True
-        self.status["result"] = True
-        event.app.exit(result=True)
+        pass
 
     def _handle_enter(self, event: "KeyPressEvent") -> None:
-        self.status["answered"] = True
-        self.status["result"] = self._default
-        event.app.exit(result=self._default)
+        pass
 
     def _get_prompt_message(self) -> List[Tuple[str, str]]:
         """Get message to display infront of the input buffer.
@@ -177,20 +168,10 @@ class ConfirmPrompt(BaseSimplePrompt):
         Returns:
             Formatted text in list of tuple format.
         """
-        if not self.instruction:
-            pre_answer = (
-                "class:instruction",
-                " (%s/%s) " % (self._confirm_letter.upper(), self._reject_letter)
-                if self._default
-                else " (%s/%s) " % (self._confirm_letter, self._reject_letter.upper()),
-            )
-        else:
-            pre_answer = ("class:instruction", " %s " % self.instruction)
-        post_answer = ("class:answer", " Yes" if self.status["result"] else " No")
-        return super()._get_prompt_message(pre_answer, post_answer)
+        pass
 
     def _run(self) -> bool:
-        return self._session.prompt()
+        pass
 
     async def _run_async(self) -> Any:
-        return await self._session.prompt_async()
+        pass

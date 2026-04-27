@@ -129,23 +129,7 @@ class BaseSimplePrompt(ABC):
         it inherits from :class:`~InquirerPy.base.simple.BaseSimplePrompt` or
         :class:`~InquirerPy.base.complex.BaseComplexPrompt`.
         """
-
-        def _factory(keys, filter, action):
-            if action not in self.kb_func_lookup:
-                raise RequiredKeyNotFound(f"keybinding action {action} not found")
-            if not isinstance(keys, list):
-                keys = [keys]
-
-            @self.register_kb(*keys, filter=filter)
-            def _(event):
-                for method in self.kb_func_lookup[action]:
-                    method["func"](event, *method.get("args", []))
-
-        for key, item in self.kb_maps.items():
-            if not isinstance(item, list):
-                item = [item]
-            for kb in item:
-                _factory(kb["key"], kb.get("filter", Condition(lambda: True)), key)
+        pass
 
     @abstractmethod
     def _set_error(self, message: str) -> None:
@@ -162,22 +146,11 @@ class BaseSimplePrompt(ABC):
         Skip the prompt if the `_mandatory` field is False, otherwise
         show an error message that the prompt cannot be skipped.
         """
-        if not self._mandatory:
-            self.status["answered"] = True
-            self.status["skipped"] = True
-            self.status["result"] = None
-            if event:
-                event.app.exit(result=None)
-        else:
-            self._set_error(message=self._mandatory_message)
+        pass
 
     def _handle_interrupt(self, event: Optional["KeyPressEvent"]) -> None:
         """Handle the event when a KeyboardInterrupt signal is sent."""
-        self.status["answered"] = True
-        self.status["result"] = INQUIRERPY_KEYBOARD_INTERRUPT
-        self.status["skipped"] = True
-        if event:
-            event.app.exit(result=INQUIRERPY_KEYBOARD_INTERRUPT)
+        pass
 
     @abstractmethod
     def _handle_enter(self, event: Optional["KeyPressEvent"]) -> None:
@@ -193,11 +166,11 @@ class BaseSimplePrompt(ABC):
             result: The result of the user answer.
             skipped: If the prompt is skipped.
         """
-        return self._status
+        pass
 
     @status.setter
     def status(self, value) -> None:
-        self._status = value
+        pass
 
     def register_kb(
         self, *keys: Union[Keys, str], filter: FilterOrBool = True, **kwargs
@@ -223,25 +196,7 @@ class BaseSimplePrompt(ABC):
             ... def test(event):
             ...     pass
         """
-        alt_pattern = re.compile(r"^alt-(.*)")
-
-        def decorator(func: KeyHandlerCallable) -> KeyHandlerCallable:
-            formatted_keys = []
-            for key in keys:
-                match = alt_pattern.match(key)
-                if match:
-                    formatted_keys.append("escape")
-                    formatted_keys.append(match.group(1))
-                else:
-                    formatted_keys.append(key)
-
-            @self._kb.add(*formatted_keys, filter=filter, **kwargs)
-            def executable(event) -> None:
-                func(event)
-
-            return executable
-
-        return decorator
+        pass
 
     @abstractmethod
     def _get_prompt_message(
@@ -327,16 +282,7 @@ class BaseSimplePrompt(ABC):
         Raises:
             KeyboardInterrupt: When `ctrl-c` is pressed and `raise_keyboard_interrupt` is True.
         """
-        result = self._run()
-        if raise_keyboard_interrupt is not None:
-            self._raise_kbi = not os.getenv(
-                "INQUIRERPY_NO_RAISE_KBI", not raise_keyboard_interrupt
-            )
-        if result == INQUIRERPY_KEYBOARD_INTERRUPT:
-            raise KeyboardInterrupt
-        if not self._filter:
-            return result
-        return self._filter(result)
+        pass
 
     async def execute_async(self) -> Any:
         """Run the prompt asynchronously and get the result.
@@ -347,32 +293,27 @@ class BaseSimplePrompt(ABC):
         Raises:
             KeyboardInterrupt: When `ctrl-c` is pressed and `raise_keyboard_interrupt` is True.
         """
-        result = await self._run_async()
-        if result == INQUIRERPY_KEYBOARD_INTERRUPT:
-            raise KeyboardInterrupt
-        if not self._filter:
-            return result
-        return self._filter(result)
+        pass
 
     @property
     def instruction(self) -> str:
         """str: Instruction to display next to question."""
-        return self._instruction
+        pass
 
     @property
     def kb_maps(self) -> Dict[str, Any]:
         """Dict[str, Any]: Keybinding mappings."""
-        return self._kb_maps
+        pass
 
     @kb_maps.setter
     def kb_maps(self, value: Dict[str, Any]) -> None:
-        self._kb_maps = {**self._kb_maps, **value}
+        pass
 
     @property
     def kb_func_lookup(self) -> Dict[str, Any]:
         """Dict[str, Any]: Keybinding function lookup mappings.."""
-        return self._kb_func_lookup
+        pass
 
     @kb_func_lookup.setter
     def kb_func_lookup(self, value: Dict[str, Any]) -> None:
-        self._kb_func_lookup = {**self._kb_func_lookup, **value}
+        pass

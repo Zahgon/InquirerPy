@@ -48,65 +48,13 @@ class InquirerPyRawlistControl(InquirerPyUIListControl):
         )
 
     def _format_choices(self) -> None:
-        separator_count = 0
-        for index, choice in enumerate(self.choices):
-            if isinstance(choice["value"], Separator):
-                separator_count += 1
-                continue
-            choice["display_index"] = index + 1 - separator_count
-            choice["actual_index"] = index
-
-        if self.choices:
-            first_valid_choice_index = 0
-            while isinstance(
-                self.choices[first_valid_choice_index]["value"], Separator
-            ):
-                first_valid_choice_index += 1
-            if self.selected_choice_index == first_valid_choice_index:
-                for choice in self.choices:
-                    if isinstance(choice["value"], Separator):
-                        continue
-                    if choice["display_index"] == self._default:
-                        self.selected_choice_index = choice["actual_index"]
-                        break
+        pass
 
     def _get_hover_text(self, choice) -> List[Tuple[str, str]]:
-        display_choices = []
-        display_choices.append(("class:pointer", self._pointer))
-        display_choices.append(
-            (
-                "class:marker",
-                self._marker if choice["enabled"] else self._marker_pl,
-            )
-        )
-        if not isinstance(choice["value"], Separator):
-            display_choices.append(
-                (
-                    "class:pointer",
-                    "%s%s" % (str(choice["display_index"]), self._separator),
-                )
-            )
-        display_choices.append(("[SetCursorPosition]", ""))
-        display_choices.append(("class:pointer", choice["name"]))
-        return display_choices
+        pass
 
     def _get_normal_text(self, choice) -> List[Tuple[str, str]]:
-        display_choices = []
-        display_choices.append(("", len(self._pointer) * " "))
-        display_choices.append(
-            (
-                "class:marker",
-                self._marker if choice["enabled"] else self._marker_pl,
-            )
-        )
-        if not isinstance(choice["value"], Separator):
-            display_choices.append(
-                ("", "%s%s" % (str(choice["display_index"]), self._separator))
-            )
-            display_choices.append(("", choice["name"]))
-        else:
-            display_choices.append(("class:separator", choice["name"]))
-        return display_choices
+        pass
 
 
 class RawlistPrompt(ListPrompt):
@@ -257,29 +205,11 @@ class RawlistPrompt(ListPrompt):
         Check if fetched choices exceed the limit of 9, raise
         InvalidArgument exception.
         """
-
-        def keybinding_factory(choice):
-            @self.register_kb(str(choice["display_index"]))
-            def keybinding(_) -> None:
-                self.content_control.selected_choice_index = int(choice["actual_index"])
-
-            return keybinding
-
-        if self.content_control.choice_count >= 10:
-            raise InvalidArgument("rawlist argument choices cannot exceed length of 9")
-
-        for choice in self.content_control.choices:
-            if not isinstance(choice["value"], Separator):
-                keybinding_factory(choice)
+        pass
 
     def _get_prompt_message(self) -> List[Tuple[str, str]]:
         """Return the formatted text to display in the prompt.
 
         Overriding this method to allow multiple formatted class to be displayed.
         """
-        display_message = super()._get_prompt_message()
-        if not self.status["answered"] and self.content_control.choices:
-            display_message.append(
-                ("class:input", str(self.content_control.selection["display_index"]))
-            )
-        return display_message
+        pass

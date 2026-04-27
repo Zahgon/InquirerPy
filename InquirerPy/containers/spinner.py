@@ -89,20 +89,8 @@ class SpinnerWindow(ConditionalContainer):
         Returns:
             Formatted text.
         """
-        return [
-            ("class:spinner_pattern", self._char),
-            ("", " "),
-            ("class:spinner_text", self._text),
-        ]
+        pass
 
     async def start(self) -> None:
         """Start the spinner."""
-        if self._spinning:
-            return
-        self._spinning = True
-        while self._loading():
-            for char in self._pattern:
-                await asyncio.sleep(self._delay)
-                self._char = char
-                self._redraw()
-        self._spinning = False
+        pass

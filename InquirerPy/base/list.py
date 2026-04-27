@@ -141,13 +141,11 @@ class BaseListPrompt(BaseComplexPrompt):
         Raises:
             NotImplementedError: When `self._content_control` is not found.
         """
-        if not self._content_control:
-            raise NotImplementedError
-        return self._content_control
+        pass
 
     @content_control.setter
     def content_control(self, value: InquirerPyUIListControl) -> None:
-        self._content_control = value
+        pass
 
     @property
     def result_name(self) -> Any:
@@ -155,13 +153,7 @@ class BaseListPrompt(BaseComplexPrompt):
 
         In multiselect scenario, return result as a list.
         """
-        if self._multiselect:
-            return [choice["name"] for choice in self.selected_choices]
-        else:
-            try:
-                return self.content_control.selection["name"]
-            except IndexError:
-                return ""
+        pass
 
     @property
     def result_value(self) -> Any:
@@ -169,22 +161,12 @@ class BaseListPrompt(BaseComplexPrompt):
 
         In multiselect scenario, return result as a list.
         """
-        if self._multiselect:
-            return [choice["value"] for choice in self.selected_choices]
-        else:
-            try:
-                return self.content_control.selection["value"]
-            except IndexError:
-                return ""
+        pass
 
     @property
     def selected_choices(self) -> List[Any]:
         """List[Any]: Get all user selected choices."""
-
-        def filter_choice(choice):
-            return not isinstance(choice, Separator) and choice["enabled"]
-
-        return list(filter(filter_choice, self.content_control.choices))
+        pass
 
     def _handle_down(self, _) -> bool:
         """Handle event when user attempts to move down.
@@ -192,22 +174,7 @@ class BaseListPrompt(BaseComplexPrompt):
         Returns:
             Boolean indicating if the action hits the cap.
         """
-        if self._cycle:
-            self.content_control.selected_choice_index = (
-                self.content_control.selected_choice_index + 1
-            ) % self.content_control.choice_count
-            return False
-        else:
-            self.content_control.selected_choice_index += 1
-            if (
-                self.content_control.selected_choice_index
-                >= self.content_control.choice_count
-            ):
-                self.content_control.selected_choice_index = (
-                    self.content_control.choice_count - 1
-                )
-                return True
-            return False
+        pass
 
     def _handle_up(self, _) -> bool:
         """Handle event when user attempts to move up.
@@ -215,17 +182,7 @@ class BaseListPrompt(BaseComplexPrompt):
         Returns:
             Boolean indicating if the action hits the cap.
         """
-        if self._cycle:
-            self.content_control.selected_choice_index = (
-                self.content_control.selected_choice_index - 1
-            ) % self.content_control.choice_count
-            return False
-        else:
-            self.content_control.selected_choice_index -= 1
-            if self.content_control.selected_choice_index < 0:
-                self.content_control.selected_choice_index = 0
-                return True
-            return False
+        pass
 
     @abstractmethod
     def _handle_toggle_choice(self, event) -> None:

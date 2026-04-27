@@ -68,32 +68,10 @@ class InquirerPyListControl(InquirerPyUIListControl):
         )
 
     def _get_hover_text(self, choice) -> List[Tuple[str, str]]:
-        display_choices = []
-        display_choices.append(("class:pointer", self._pointer))
-        display_choices.append(
-            (
-                "class:marker",
-                self._marker if choice["enabled"] else self._marker_pl,
-            )
-        )
-        display_choices.append(("[SetCursorPosition]", ""))
-        display_choices.append(("class:pointer", choice["name"]))
-        return display_choices
+        pass
 
     def _get_normal_text(self, choice) -> List[Tuple[str, str]]:
-        display_choices = []
-        display_choices.append(("", len(self._pointer) * " "))
-        display_choices.append(
-            (
-                "class:marker",
-                self._marker if choice["enabled"] else self._marker_pl,
-            )
-        )
-        if not isinstance(choice["value"], Separator):
-            display_choices.append(("", choice["name"]))
-        else:
-            display_choices.append(("class:separator", choice["name"]))
-        return display_choices
+        pass
 
 
 class ListPrompt(BaseListPrompt):
@@ -286,18 +264,11 @@ class ListPrompt(BaseListPrompt):
 
         This ensures that cursor is always at the end of the window.
         """
-        message = self._get_prompt_message()
-        message.append(("[SetCursorPosition]", ""))
-        message.append(("", " "))  # [SetCursorPosition] require char behind it
-        return message
+        pass
 
     def _handle_toggle_choice(self, _) -> None:
         """Toggle the `enabled` status of the choice."""
-        if not self._multiselect:
-            return
-        self.content_control.selection["enabled"] = not self.content_control.selection[
-            "enabled"
-        ]
+        pass
 
     def _handle_toggle_all(self, _, value: Optional[bool] = None) -> None:
         """Toggle all choice `enabled` status.
@@ -305,34 +276,15 @@ class ListPrompt(BaseListPrompt):
         Args:
             value: Sepcify a value to toggle.
         """
-        if not self._multiselect:
-            return
-        for choice in self.content_control.choices:
-            if isinstance(choice["value"], Separator):
-                continue
-            choice["enabled"] = value if value else not choice["enabled"]
+        pass
 
     def _handle_up(self, event) -> None:
         """Handle the event when user attempt to move up."""
-        while True:
-            cap = super()._handle_up(event)
-            if not isinstance(self.content_control.selection["value"], Separator):
-                break
-            else:
-                if cap and not self._cycle:
-                    self._handle_down(event)
-                    break
+        pass
 
     def _handle_down(self, event) -> None:
         """Handle the event when user attempt to move down."""
-        while True:
-            cap = super()._handle_down(event)
-            if not isinstance(self.content_control.selection["value"], Separator):
-                break
-            else:
-                if cap and not self._cycle:
-                    self._handle_up(event)
-                    break
+        pass
 
     def _handle_enter(self, event: "KeyPressEvent") -> None:
         """Handle the event when user hit `enter` key.
@@ -343,19 +295,7 @@ class ListPrompt(BaseListPrompt):
 
         In multiselect scenario, if nothing is selected, return the current highlighted choice.
         """
-        try:
-            fake_document = FakeDocument(self.result_value)
-            self._validator.validate(fake_document)  # type: ignore
-        except ValidationError as e:
-            self._set_error(str(e))
-        else:
-            self.status["answered"] = True
-            if self._multiselect and not self.selected_choices:
-                self.status["result"] = [self.content_control.selection["name"]]
-                event.app.exit(result=[self.content_control.selection["value"]])
-            else:
-                self.status["result"] = self.result_name
-                event.app.exit(result=self.result_value)
+        pass
 
     @property
     def extra_message_line_count(self) -> int:
@@ -363,6 +303,4 @@ class ListPrompt(BaseListPrompt):
 
         Overriding it to count the cursor as well.
         """
-        cursor_offset = -1 if not self._show_cursor else 0
-        term_width, _ = shutil.get_terminal_size()
-        return (self.total_message_length + cursor_offset) // term_width
+        pass

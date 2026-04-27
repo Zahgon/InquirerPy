@@ -113,7 +113,7 @@ class BaseComplexPrompt(BaseSimplePrompt):
 
     def _redraw(self) -> None:
         """Redraw the application UI."""
-        self._application.invalidate()
+        pass
 
     def register_kb(
         self, *keys: Union[Keys, str], filter: FilterOrBool = True
@@ -122,18 +122,7 @@ class BaseComplexPrompt(BaseSimplePrompt):
 
         Ensure that the `invalid` state is cleared on next keybinding entered.
         """
-        kb_dec = super().register_kb(*keys, filter=filter)
-
-        def decorator(func: KeyHandlerCallable) -> KeyHandlerCallable:
-            @kb_dec
-            def executable(event):
-                if self._invalid:
-                    self._invalid = False
-                func(event)
-
-            return executable
-
-        return decorator
+        pass
 
     def _exception_handler(self, _, context) -> None:
         """Set exception handler for the event loop.
@@ -144,10 +133,7 @@ class BaseComplexPrompt(BaseSimplePrompt):
             loop: Current event loop.
             context: Exception context.
         """
-        self._status["answered"] = True
-        self._status["result"] = INQUIRERPY_KEYBOARD_INTERRUPT
-        self._status["skipped"] = True
-        self._application.exit(exception=context["exception"])
+        pass
 
     def _after_render(self, app: Optional[Application]) -> None:
         """Run after the :class:`~prompt_toolkit.application.Application` is rendered/updated.
@@ -158,11 +144,7 @@ class BaseComplexPrompt(BaseSimplePrompt):
         Set event loop exception handler here, since its guaranteed that the event loop is running
         in `_after_render`.
         """
-        if not self._rendered:
-            self._rendered = True
-
-            self._keybinding_factory()
-            self._on_rendered(app)
+        pass
 
     def _set_error(self, message: str) -> None:
         """Set error message and set invalid state.
@@ -170,8 +152,7 @@ class BaseComplexPrompt(BaseSimplePrompt):
         Args:
             message: Error message to display.
         """
-        self._invalid_message = message
-        self._invalid = True
+        pass
 
     def _get_error_message(self) -> List[Tuple[str, str]]:
         """Obtain the error message dynamically.
@@ -179,12 +160,7 @@ class BaseComplexPrompt(BaseSimplePrompt):
         Returns:
             FormattedText in list of tuple format.
         """
-        return [
-            (
-                "class:validation-toolbar",
-                self._invalid_message,
-            )
-        ]
+        pass
 
     def _on_rendered(self, _: Optional[Application]) -> None:
         """Run once after the UI is rendered. Acts like `ComponentDidMount`."""
@@ -196,20 +172,15 @@ class BaseComplexPrompt(BaseSimplePrompt):
         Returns:
             Formatted text in list of tuple format.
         """
-        pre_answer = (
-            "class:instruction",
-            " %s " % self.instruction if self.instruction else " ",
-        )
-        post_answer = ("class:answer", " %s" % self.status["result"])
-        return super()._get_prompt_message(pre_answer, post_answer)
+        pass
 
     def _run(self) -> Any:
         """Run the application."""
-        return self.application.run()
+        pass
 
     async def _run_async(self) -> None:
         """Run the application asynchronously."""
-        return await self.application.run_async()
+        pass
 
     @property
     def application(self) -> Application:
@@ -221,34 +192,21 @@ class BaseComplexPrompt(BaseSimplePrompt):
         Raises:
             NotImplementedError: When `self._application` is not defined.
         """
-        if not self._application:
-            raise NotImplementedError
-        return self._application
+        pass
 
     @application.setter
     def application(self, value: Application) -> None:
-        self._application = value
+        pass
 
     @property
     def height_offset(self) -> int:
         """int: Height offset to apply."""
-        if not self._wrap_lines:
-            return self._height_offset
-        return self.extra_line_count + self._height_offset
+        pass
 
     @property
     def total_message_length(self) -> int:
         """int: Total length of the message."""
-        total_message_length = 0
-        if self._qmark:
-            total_message_length += len(self._qmark)
-            total_message_length += 1  # Extra space if qmark is present
-        total_message_length += len(str(self._message))
-        total_message_length += 1  # Extra space between message and instruction
-        total_message_length += len(str(self._instruction))
-        if self._instruction:
-            total_message_length += 1  # Extra space behind the instruction
-        return total_message_length
+        pass
 
     @property
     def extra_message_line_count(self) -> int:
@@ -258,8 +216,7 @@ class BaseComplexPrompt(BaseSimplePrompt):
         24 // 24 will equal to 1 however we only want the value to be 1 when we have 25 char
         which will create an extra line.
         """
-        term_width, _ = shutil.get_terminal_size()
-        return (self.total_message_length - 1) // term_width
+        pass
 
     @property
     def extra_long_instruction_line_count(self) -> int:
@@ -268,11 +225,7 @@ class BaseComplexPrompt(BaseSimplePrompt):
         See Also:
             :attr:`.BaseComplexPrompt.extra_message_line_count`
         """
-        if self._long_instruction:
-            term_width, _ = shutil.get_terminal_size()
-            return (len(self._long_instruction) - 1) // term_width
-        else:
-            return 0
+        pass
 
     @property
     def extra_line_count(self) -> int:
@@ -284,11 +237,4 @@ class BaseComplexPrompt(BaseSimplePrompt):
         Returns:
             Total extra lines created due to line wrapping.
         """
-        result = 0
-
-        # message wrap
-        result += self.extra_message_line_count
-        # long instruction wrap
-        result += self.extra_long_instruction_line_count
-
-        return result
+        pass

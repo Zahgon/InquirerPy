@@ -47,13 +47,7 @@ def _get_questions(questions: InquirerPyQuestions) -> List[Dict[str, Any]]:
     Returns:
         List of validated questions.
     """
-    if isinstance(questions, dict):
-        questions = [questions]
-
-    if not isinstance(questions, list):
-        raise InvalidArgument("argument questions should be type of list or dictionary")
-
-    return questions
+    pass
 
 
 def _get_question(
@@ -70,15 +64,7 @@ def _get_question(
         A tuple containing question information in the order of
             question dictionary, type of question, name of question, message of question.
     """
-    question = original_question.copy()
-    question_type = question.pop("type")
-    question_name = question.pop("name", index)
-    message = question.pop("message")
-    question_when = question.pop("when", None)
-    if question_when and not question_when(result):
-        result[question_name] = None
-        question = None
-    return question, question_type, question_name, message
+    pass
 
 
 async def prompt_async(
@@ -93,35 +79,7 @@ async def prompt_async(
 
     Refer to :func:`InquirerPy.resolver.prompt` for detailed documentations.
     """
-    result: InquirerPySessionResult = {}
-    if not keybindings:
-        keybindings = {}
-
-    questions = _get_questions(questions=questions)
-    question_style = get_style(style, style_override)
-
-    for index, original_question in enumerate(questions):
-        try:
-            question, question_type, question_name, message = _get_question(
-                original_question=original_question, result=result, index=index
-            )
-            if question is None:
-                continue
-            args = {
-                "message": message,
-                "style": question_style,
-                "vi_mode": vi_mode,
-                "raise_keyboard_interrupt": raise_keyboard_interrupt,
-                "session_result": result,
-                "keybindings": {**keybindings, **question.pop("keybindings", {})},
-            }
-            result[question_name] = await question_mapping[question_type](
-                **args, **question
-            ).execute_async()
-        except KeyError:
-            raise RequiredKeyNotFound
-
-    return result
+    pass
 
 
 def prompt(
@@ -188,32 +146,4 @@ def prompt(
         ... ]
         >>> result = prompt(questions=questions)
     """
-    result: InquirerPySessionResult = {}
-    if not keybindings:
-        keybindings = {}
-
-    questions = _get_questions(questions=questions)
-    question_style = get_style(style, style_override)
-
-    for index, original_question in enumerate(questions):
-        try:
-            question, question_type, question_name, message = _get_question(
-                original_question=original_question, result=result, index=index
-            )
-            if question is None:
-                continue
-            args = {
-                "message": message,
-                "style": question_style,
-                "vi_mode": vi_mode,
-                "raise_keyboard_interrupt": raise_keyboard_interrupt,
-                "session_result": result,
-                "keybindings": {**keybindings, **question.pop("keybindings", {})},
-            }
-            result[question_name] = question_mapping[question_type](
-                **args, **question
-            ).execute()
-        except KeyError:
-            raise RequiredKeyNotFound
-
-    return result
+    pass

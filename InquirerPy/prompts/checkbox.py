@@ -53,45 +53,10 @@ class InquirerPyCheckboxControl(InquirerPyUIListControl):
         pass
 
     def _get_hover_text(self, choice) -> List[Tuple[str, str]]:
-        display_choices = []
-        display_choices.append(("class:pointer", self._pointer))
-        if self._pointer:
-            display_choices.append(("", " "))
-        if not isinstance(choice["value"], Separator):
-            display_choices.append(
-                (
-                    "class:checkbox",
-                    self._enabled_symbol
-                    if choice["enabled"]
-                    else self._disabled_symbol,
-                )
-            )
-            if self._enabled_symbol and self._disabled_symbol:
-                display_choices.append(("", " "))
-        display_choices.append(("[SetCursorPosition]", ""))
-        display_choices.append(("class:pointer", choice["name"]))
-        return display_choices
+        pass
 
     def _get_normal_text(self, choice) -> List[Tuple[str, str]]:
-        display_choices = []
-        display_choices.append(("", len(self._pointer) * " "))
-        if self._pointer:
-            display_choices.append(("", " "))
-        if not isinstance(choice["value"], Separator):
-            display_choices.append(
-                (
-                    "class:checkbox",
-                    self._enabled_symbol
-                    if choice["enabled"]
-                    else self._disabled_symbol,
-                )
-            )
-            if self._enabled_symbol and self._disabled_symbol:
-                display_choices.append(("", " "))
-            display_choices.append(("", choice["name"]))
-        else:
-            display_choices.append(("class:separator", choice["name"]))
-        return display_choices
+        pass
 
 
 class CheckboxPrompt(ListPrompt):
@@ -233,12 +198,4 @@ class CheckboxPrompt(ListPrompt):
         Args:
             event: Keypress event.
         """
-        try:
-            fake_document = FakeDocument(self.result_value)
-            self._validator.validate(fake_document)  # type: ignore
-        except ValidationError:
-            self._invalid = True
-        else:
-            self.status["answered"] = True
-            self.status["result"] = self.result_name
-            event.app.exit(result=self.result_value)
+        pass

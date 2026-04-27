@@ -93,17 +93,7 @@ class InquirerPyFuzzyControl(InquirerPyUIListControl):
         )
 
     def _format_choices(self) -> None:
-        for index, choice in enumerate(self.choices):
-            if isinstance(choice["value"], Separator):
-                raise InvalidArgument(
-                    "fuzzy prompt argument choices should not contain Separator"
-                )
-            choice["index"] = index
-            choice["indices"] = []
-        self._filtered_choices = self.choices
-        self._first_line = 0
-        self._last_line = min(self._max_lines, self.choice_count)
-        self._height = self._last_line - self._first_line
+        pass
 
     def _get_hover_text(self, choice) -> List[Tuple[str, str]]:
         """Get the current highlighted line of text.
@@ -114,27 +104,7 @@ class InquirerPyFuzzyControl(InquirerPyUIListControl):
         Returns:
             FormattedText in list of tuple format.
         """
-        display_choices = []
-        display_choices.append(("class:pointer", self._pointer))
-        display_choices.append(
-            (
-                "class:marker",
-                self._marker
-                if self.choices[choice["index"]]["enabled"]
-                else self._marker_pl,
-            )
-        )
-        display_choices.append(("[SetCursorPosition]", ""))
-        if not choice["indices"]:
-            display_choices.append(("class:pointer", choice["name"]))
-        else:
-            indices = set(choice["indices"])
-            for index, char in enumerate(choice["name"]):
-                if index in indices:
-                    display_choices.append(("class:fuzzy_match", char))
-                else:
-                    display_choices.append(("class:pointer", char))
-        return display_choices
+        pass
 
     def _get_normal_text(self, choice) -> List[Tuple[str, str]]:
         """Get the line of text in `FormattedText`.
@@ -147,26 +117,7 @@ class InquirerPyFuzzyControl(InquirerPyUIListControl):
         Returns:
             FormattedText in list of tuple format.
         """
-        display_choices = []
-        display_choices.append(("class:pointer", len(self._pointer) * " "))
-        display_choices.append(
-            (
-                "class:marker",
-                self._marker
-                if self.choices[choice["index"]]["enabled"]
-                else self._marker_pl,
-            )
-        )
-        if not choice["indices"]:
-            display_choices.append(("", choice["name"]))
-        else:
-            indices = set(choice["indices"])
-            for index, char in enumerate(choice["name"]):
-                if index in indices:
-                    display_choices.append(("class:fuzzy_match", char))
-                else:
-                    display_choices.append(("", char))
-        return display_choices
+        pass
 
     def _get_formatted_choices(self) -> List[Tuple[str, str]]:
         """Get all available choices in formatted text format.
@@ -178,43 +129,7 @@ class InquirerPyFuzzyControl(InquirerPyUIListControl):
         Returns:
             FormattedText in list of tuple format.
         """
-        display_choices = []
-        if self.choice_count == 0:
-            self._selected_choice_index = 0
-            return display_choices
-
-        if self._selected_choice_index < 0:
-            self._selected_choice_index = 0
-        elif self._selected_choice_index >= self.choice_count:
-            self._selected_choice_index = self.choice_count - 1
-
-        if (self._last_line - self._first_line) < min(self.choice_count, self._height):
-            self._last_line = min(self.choice_count, self._height)
-            self._first_line = self._last_line - min(self.choice_count, self._height)
-
-        if self._selected_choice_index <= self._first_line:
-            self._first_line = self._selected_choice_index
-            self._last_line = self._first_line + min(self._height, self.choice_count)
-        elif self._selected_choice_index >= self._last_line:
-            self._last_line = self._selected_choice_index + 1
-            self._first_line = self._last_line - min(self._height, self.choice_count)
-
-        if self._last_line > self.choice_count:
-            self._last_line = self.choice_count
-            self._first_line = self._last_line - min(self._height, self.choice_count)
-        if self._first_line < 0:
-            self._first_line = 0
-            self._last_line = self._first_line + min(self._height, self.choice_count)
-
-        for index in range(self._first_line, self._last_line):
-            if index == self.selected_choice_index:
-                display_choices += self._get_hover_text(self._filtered_choices[index])
-            else:
-                display_choices += self._get_normal_text(self._filtered_choices[index])
-            display_choices.append(("", "\n"))
-        if display_choices:
-            display_choices.pop()
-        return display_choices
+        pass
 
     async def _filter_choices(self, wait_time: float) -> List[Dict[str, Any]]:
         """Call to filter choices using fzy fuzzy match.
@@ -225,19 +140,7 @@ class InquirerPyFuzzyControl(InquirerPyUIListControl):
         Returns:
             Filtered choices.
         """
-        if not self._current_text():
-            for choice in self.choices:
-                choice["indices"] = []
-            choices = self.choices
-        else:
-            await asyncio.sleep(wait_time)
-            choices = await fuzzy_match(
-                self._current_text(),
-                cast(HAYSTACKS, self.choices),
-                key="name",
-                scorer=self._scorer,
-            )
-        return choices
+        pass
 
     @property
     def selection(self) -> Dict[str, Any]:
@@ -248,12 +151,12 @@ class InquirerPyFuzzyControl(InquirerPyUIListControl):
         Returns:
             A dictionary of name and value for the current pointed choice.
         """
-        return self._filtered_choices[self.selected_choice_index]
+        pass
 
     @property
     def choice_count(self) -> int:
         """int: Filtered choice count."""
-        return len(self._filtered_choices)
+        pass
 
 
 class FuzzyPrompt(BaseListPrompt):
@@ -503,14 +406,7 @@ class FuzzyPrompt(BaseListPrompt):
         Args:
             value: Specify the value to toggle.
         """
-        if value is not None:
-            self.content_control._scorer = fzy_scorer if not value else substr_scorer
-        else:
-            self.content_control._scorer = (
-                fzy_scorer
-                if self.content_control._scorer == substr_scorer
-                else substr_scorer
-            )
+        pass
 
     def _on_rendered(self, _) -> None:
         """Render callable choices and set the buffer default text.
@@ -518,10 +414,7 @@ class FuzzyPrompt(BaseListPrompt):
         Setting buffer default text has to be after application is rendered and choice are loaded,
         because `self._filter_choices` will use the event loop from `Application`.
         """
-        if self._default:
-            default_text = str(self._default)
-            self._buffer.text = default_text
-            self._buffer.cursor_position = len(default_text)
+        pass
 
     def _handle_toggle_all(self, _, value: Optional[bool] = None) -> None:
         """Toggle all choice `enabled` status.
@@ -529,45 +422,19 @@ class FuzzyPrompt(BaseListPrompt):
         Args:
             value: Specify the value to toggle.
         """
-        if not self._multiselect:
-            return
-        for choice in self.content_control._filtered_choices:
-            raw_choice = self.content_control.choices[choice["index"]]
-            if isinstance(raw_choice["value"], Separator):
-                continue
-            raw_choice["enabled"] = value if value else not raw_choice["enabled"]
+        pass
 
     def _generate_after_input(self) -> List[Tuple[str, str]]:
         """Virtual text displayed after the user input."""
-        display_message = []
-        if self._info:
-            display_message.append(("", "  "))
-            display_message.append(
-                (
-                    "class:fuzzy_info",
-                    f"{self.content_control.choice_count}/{len(self.content_control.choices)}",
-                )
-            )
-            if self._multiselect:
-                display_message.append(
-                    ("class:fuzzy_info", f" ({len(self.selected_choices)})")
-                )
-            if self.content_control._scorer == substr_scorer:
-                display_message.append(("class:fuzzy_info", self._exact_symbol))
-        return display_message
+        pass
 
     def _generate_before_input(self) -> List[Tuple[str, str]]:
         """Display prompt symbol as virtual text before user input."""
-        display_message = []
-        display_message.append(("class:fuzzy_prompt", "%s " % self._prompt))
-        return display_message
+        pass
 
     def _filter_callback(self, task):
         """Redraw `self._application` when the filter task is finished."""
-        if task.cancelled():
-            return
-        self.content_control._filtered_choices = task.result()
-        self._application.invalidate()
+        pass
 
     def _calculate_wait_time(self) -> float:
         """Calculate wait time to smoother the application on big data set.
@@ -578,21 +445,7 @@ class FuzzyPrompt(BaseListPrompt):
         Returns:
             Desired wait time before running the filter.
         """
-        wait_table = {
-            2: 0.05,
-            3: 0.1,
-            4: 0.2,
-            5: 0.3,
-        }
-        digit = 1
-        if len(self.content_control.choices) > 0:
-            digit = int(math.log10(len(self.content_control.choices))) + 1
-
-        if digit < 2:
-            return 0.0
-        if digit in wait_table:
-            return wait_table[digit]
-        return wait_table[5] * (2 ** (digit - 5))
+        pass
 
     def _on_text_changed(self, _) -> None:
         """Handle buffer text change event.
@@ -612,24 +465,11 @@ class FuzzyPrompt(BaseListPrompt):
         Don't need to create or check asyncio event loop, `prompt_toolkit`
         application already has a event loop running.
         """
-        if self._invalid:
-            self._invalid = False
-        wait_time = self._calculate_wait_time()
-        if self._task and not self._task.done():
-            self._task.cancel()
-        self._task = asyncio.create_task(
-            self.content_control._filter_choices(wait_time)
-        )
-        self._task.add_done_callback(self._filter_callback)
+        pass
 
     def _handle_toggle_choice(self, _) -> None:
         """Handle tab event, alter the `selected` state of the choice."""
-        if not self._multiselect:
-            return
-        current_selected_index = self.content_control.selection["index"]
-        self.content_control.choices[current_selected_index][
-            "enabled"
-        ] = not self.content_control.choices[current_selected_index]["enabled"]
+        pass
 
     def _handle_enter(self, event: "KeyPressEvent") -> None:
         """Handle enter event.
@@ -644,37 +484,17 @@ class FuzzyPrompt(BaseListPrompt):
 
         If current UI contains no choice due to filter, return None.
         """
-        try:
-            fake_document = FakeDocument(self.result_value)
-            self._validator.validate(fake_document)  # type: ignore
-            if self._multiselect:
-                self.status["answered"] = True
-                if not self.selected_choices:
-                    self.status["result"] = [self.content_control.selection["name"]]
-                    event.app.exit(result=[self.content_control.selection["value"]])
-                else:
-                    self.status["result"] = self.result_name
-                    event.app.exit(result=self.result_value)
-            else:
-                self.status["answered"] = True
-                self.status["result"] = self.content_control.selection["name"]
-                event.app.exit(result=self.content_control.selection["value"])
-        except ValidationError as e:
-            self._set_error(str(e))
-        except IndexError:
-            self.status["answered"] = True
-            self.status["result"] = None if not self._multiselect else []
-            event.app.exit(result=None if not self._multiselect else [])
+        pass
 
     @property
     def content_control(self) -> InquirerPyFuzzyControl:
         """InquirerPyFuzzyControl: Override for type-hinting."""
-        return cast(InquirerPyFuzzyControl, super().content_control)
+        pass
 
     @content_control.setter
     def content_control(self, value: InquirerPyFuzzyControl) -> None:
-        self._content_control = value
+        pass
 
     def _get_current_text(self) -> str:
         """Get current input buffer text."""
-        return self._buffer.text
+        pass

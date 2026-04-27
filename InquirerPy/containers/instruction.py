@@ -35,4 +35,4 @@ class InstructionWindow(ConditionalContainer):
         Returns:
             FormattedText in list of tuple format.
         """
-        return [("class:long_instruction", self._message)]
+        pass
